@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Let's Hang Out ✨</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        /* Upgraded Animated Gradient Background */
+        .animated-bg {
+            background: linear-gradient(-45deg, #e0c3fc, #8ec5fc, #fbc2eb, #a18cd1);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Elements */
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            animation: floatShape linear infinite;
+            z-index: -1;
+            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes floatShape {
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        /* Upgraded Glassmorphism UI Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Step Transitions */
+        .step {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Option Button Styling */
+        .option-btn {
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+        .option-btn:hover:not(.selected) {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+        .option-btn.selected {
+            background-color: #eef2ff; /* indigo-50 */
+            border-color: #6366f1; /* indigo-500 */
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
+            transform: scale(1.02);
+        }
+
+        /* Fixed Dodging Button styling */
+        #no-btn {
+            position: absolute;
+            transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 50;
+        }
+
+        /* Disabled Next Button */
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 text-slate-800">
+
+    <div class="animated-bg"></div>
+    <div class="shape" style="width: 100px; height: 100px; left: 10%; animation-duration: 18s; animation-delay: 0s;"></div>
+    <div class="shape" style="width: 140px; height: 140px; left: 25%; animation-duration: 22s; animation-delay: 4s;"></div>
+    <div class="shape" style="width: 60px; height: 60px; left: 50%; animation-duration: 15s; animation-delay: 2s;"></div>
+    <div class="shape" style="width: 110px; height: 110px; left: 70%; animation-duration: 20s; animation-delay: 6s;"></div>
+    <div class="shape" style="width: 70px; height: 70px; left: 85%; animation-duration: 16s; animation-delay: 1s;"></div>
+
+    <div id="main-card" class="glass-card p-6 md:p-10 rounded-3xl w-full max-w-lg text-center relative z-10 mx-auto min-h-[400px] flex flex-col justify-center">
+        
+        <!-- Back Button -->
+        <button id="back-btn" onclick="goBack()" class="hidden absolute top-6 left-6 text-slate-500 hover:text-indigo-600 transition-colors font-semibold text-sm flex items-center gap-1 z-50 bg-white/50 backdrop-blur-sm py-1 px-3 rounded-full shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back
+        </button>
+
+        <div id="step-1" class="step active w-full">
+            <div class="text-5xl mb-4 animate-bounce inline-block bg-white/40 p-4 rounded-2xl shadow-sm">✨</div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-3 text-slate-800 tracking-tight">
+                Hey, would you like to hang out sometime?
+            </h1>
+            <p class="text-slate-500 mb-8 font-medium">Just thought it would be a cool idea to catch up.</p>
+            
+            <div class="relative h-40 sm:h-20 w-full flex justify-center items-center">
+                <!-- Yes Button (Static center) -->
+                <button id="yes-btn" onclick="nextStep('step-2')" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 z-20 w-40">
+                    Yes!
+                </button>
+                
+                <!-- No Button (Starts absolute, positioned dynamically on load) -->
+                <button id="no-btn" class="bg-white hover:bg-slate-50 text-slate-600 font-semibold py-3.5 px-8 rounded-xl shadow-md border border-slate-200 z-50 w-40">
+                    No thanks
+                </button>
+            </div>
+        </div>
+
+        <div id="step-2" class="step w-full">
+            <div class="text-4xl mb-4">🙌</div>
+            <h2 class="text-2xl font-bold mb-2">Awesome!</h2>
+            <p class="text-slate-500 mb-6">How should we do this?</p>
+            
+            <div class="space-y-3 mb-8">
+                <button onclick="selectOption('dynamic', '1 on 1 (rasi rasek)', this)" class="w-full bg-white/80 text-slate-700 font-medium py-4 px-6 rounded-xl shadow-sm option-btn flex items-center justify-between group">
+                    <span>1 on 1 (rasi rasek) 👤</span>
+                    <span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100 transition-opacity">✓</span>
+                </button>
+                <button onclick="selectOption('dynamic', 'With a group (m3a chella)', this)" class="w-full bg-white/80 text-slate-700 font-medium py-4 px-6 rounded-xl shadow-sm option-btn flex items-center justify-between group">
+                    <span>With a group (m3a chella) 👥</span>
+                    <span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100 transition-opacity">✓</span>
+                </button>
+            </div>
+            
+            <button id="next-btn-2" onclick="nextStep('step-3')" disabled class="btn-next w-full bg-indigo-600 text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition-all">
+                Next
+            </button>
+        </div>
+
+        <div id="step-3" class="step w-full">
+            <div class="text-4xl mb-4">🌟</div>
+            <h2 class="text-2xl font-bold mb-2">Got it.</h2>
+            <p class="text-slate-500 mb-6">What kind of vibe are you feeling?</p>
+            
+            <div class="space-y-3 mb-8">
+                <button onclick="selectOption('vibe', 'Outside', this)" class="w-full bg-white/80 text-slate-700 font-medium py-4 px-6 rounded-xl shadow-sm option-btn flex items-center justify-between group">
+                    <span>Outside / Outdoors 🌳</span>
+                    <span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100 transition-opacity">✓</span>
+                </button>
+                <button onclick="selectOption('vibe', 'Inside', this)" class="w-full bg-white/80 text-slate-700 font-medium py-4 px-6 rounded-xl shadow-sm option-btn flex items-center justify-between group">
+                    <span>Inside / Chill 🛋️</span>
+                    <span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100 transition-opacity">✓</span>
+                </button>
+            </div>
+
+            <button id="next-btn-3" onclick="routeVibe()" disabled class="btn-next w-full bg-indigo-600 text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition-all">
+                Next
+            </button>
+        </div>
+
+        <div id="step-4-out" class="step w-full">
+            <div class="text-4xl mb-4">☀️</div>
+            <h2 class="text-2xl font-bold mb-6">What should we do?</h2>
+            
+            <div class="space-y-3 mb-8">
+                <button onclick="selectOption('activity', 'Doulecha 3al korniche', this, 'step-4-out')" class="w-full bg-white/80 text-slate-700 font-medium py-3 px-4 rounded-xl shadow-sm option-btn text-left flex justify-between group">
+                    <span>Doulecha 3al korniche 🌊</span><span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100">✓</span>
+                </button>
+                <button onclick="selectOption('activity', 'Padel', this, 'step-4-out')" class="w-full bg-white/80 text-slate-700 font-medium py-3 px-4 rounded-xl shadow-sm option-btn text-left flex justify-between group">
+                    <span>Padel 🎾</span><span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100">✓</span>
+                </button>
+                <button onclick="selectOption('activity', 'Nchaj3ou lmontakhab (7ad mantakhbou)', this, 'step-4-out')" class="w-full bg-white/80 text-slate-700 font-medium py-3 px-4 rounded-xl shadow-sm option-btn text-left flex justify-between group">
+                    <span>Nchaj3ou lmontakhab 🇹🇳⚽</span><span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100">✓</span>
+                </button>
+                <div class="flex gap-2">
+                    <input type="text" id="custom-out" oninput="handleCustomInput('activity', this, 'step-4-out')" placeholder="Other idea? Type here..." class="flex-1 border-0 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white/80">
+                </div>
+            </div>
+            
+            <button id="next-btn-4-out" onclick="nextStep('step-5')" disabled class="btn-next w-full bg-indigo-600 text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition-all">
+                Next
+            </button>
+        </div>
+
+        <div id="step-4-in" class="step w-full">
+            <div class="text-4xl mb-4">☕</div>
+            <h2 class="text-2xl font-bold mb-6">What sounds good?</h2>
+            
+            <div class="space-y-3 mb-8">
+                <button onclick="selectOption('activity', 'Dma9 (Restaurant)', this, 'step-4-in')" class="w-full bg-white/80 text-slate-700 font-medium py-3 px-4 rounded-xl shadow-sm option-btn text-left flex justify-between group">
+                    <span>Dma9 (Restaurant) 🍽️</span><span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100">✓</span>
+                </button>
+                <button onclick="selectOption('activity', 'Salon de thé', this, 'step-4-in')" class="w-full bg-white/80 text-slate-700 font-medium py-3 px-4 rounded-xl shadow-sm option-btn text-left flex justify-between group">
+                    <span>Salon de thé 🍵</span><span class="text-indigo-400 opacity-0 group-[.selected]:opacity-100">✓</span>
+                </button>
+                <div class="flex gap-2">
+                    <input type="text" id="custom-in" oninput="handleCustomInput('activity', this, 'step-4-in')" placeholder="Other idea? Type here..." class="flex-1 border-0 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white/80">
+                </div>
+            </div>
+            
+            <button id="next-btn-4-in" onclick="nextStep('step-5')" disabled class="btn-next w-full bg-indigo-600 text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition-all">
+                Next
+            </button>
+        </div>
+
+        <div id="step-5" class="step w-full">
+            <div class="text-4xl mb-4">📍</div>
+            <h2 class="text-2xl font-bold mb-2">The Final Details</h2>
+            <p class="text-sm text-slate-500 mb-6 font-medium">No pressure, leave blank if you aren't sure yet!</p>
+            
+            <div class="space-y-4 mb-8 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Date</label>
+                    <input type="date" id="date-input" class="w-full border-0 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white/80">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Where?</label>
+                    <input type="text" id="location-input" placeholder="e.g. Lac 2, Marsa, Sidi Bou..." class="w-full border-0 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white/80">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-indigo-500 uppercase mb-1 ml-1 leading-relaxed">
+                        Anything to say? <br><span class="text-[10px] text-slate-400 normal-case">(I guarantee freedom of speech, but not freedom after speech 💀)</span>
+                    </label>
+                    <input type="text" id="extras-input" placeholder="Type here..." class="w-full border-0 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400 bg-white/80 mt-1">
+                </div>
+            </div>
+            
+            <!-- Button is always active now -->
+            <button id="next-btn-5" onclick="submitAndShowSummary()" class="btn-next w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98]">
+                Lock it in 🔒
+            </button>
+        </div>
+
+        <div id="step-6" class="step w-full">
+            <div class="text-5xl mb-4 animate-pulse">🎉</div>
+            <h2 class="text-3xl font-bold text-indigo-700 mb-2">It's a plan!</h2>
+            <p class="text-slate-500 mb-6 font-medium">I've got all the details. Here's a recap:</p>
+            
+            <div class="bg-white/70 border border-white rounded-2xl p-6 text-left space-y-4 shadow-lg mb-6 backdrop-blur-xl">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">Who</h3>
+                        <p id="sum-dynamic" class="font-semibold text-slate-800">...</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">Vibe</h3>
+                        <p id="sum-vibe" class="font-semibold text-slate-800">...</p>
+                    </div>
+                </div>
+                <div class="pt-3 border-t border-indigo-100/60">
+                    <h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">Activity</h3>
+                    <p id="sum-activity" class="font-semibold text-slate-800">...</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 pt-3 border-t border-indigo-100/60">
+                    <div>
+                        <h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">When</h3>
+                        <p id="sum-datetime" class="font-semibold text-slate-800 text-sm">...</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">Where</h3>
+                        <p id="sum-location" class="font-semibold text-slate-800 text-sm">...</p>
+                    </div>
+                </div>
+                <div id="sum-extras-container" class="pt-3 border-t border-indigo-100/60 hidden">
+                    <h3 class="text-xs font-bold text-purple-500 uppercase tracking-wider mb-1">Final words</h3>
+                    <p id="sum-extras" class="font-semibold text-slate-800 italic text-sm">...</p>
+                </div>
+            </div>
+            
+            <p class="text-sm text-slate-500 font-medium">Take a screenshot so you don't forget! 📸</p>
+        </div>
+
+    </div>
+
+    <script>
+        // State
+        const data = { dynamic: '', vibe: '', activity: '', date: '', location: '', extras: '' };
+        let historyStack = [];
+
+        window.onload = () => {
+            const yesBtn = document.getElementById('yes-btn');
+            const noBtn = document.getElementById('no-btn');
+            
+            if (window.innerWidth > 640) {
+                noBtn.style.left = '55%';
+                noBtn.style.top = '50%';
+                noBtn.style.transform = 'translateY(-50%)';
+            } else {
+                noBtn.style.left = '50%';
+                noBtn.style.top = '70px';
+                noBtn.style.transform = 'translateX(-50%)';
+            }
+        };
+
+        function nextStep(stepId, isBack = false) {
+            const activeStep = document.querySelector('.step.active');
+            if (!isBack && activeStep) historyStack.push(activeStep.id);
+            
+            if (activeStep) activeStep.classList.remove('active');
+            
+            setTimeout(() => {
+                const target = document.getElementById(stepId);
+                if (target) {
+                    target.classList.add('active');
+                    
+                    const backBtn = document.getElementById('back-btn');
+                    if (stepId === 'step-1' || stepId === 'step-6') {
+                        backBtn.classList.add('hidden');
+                        if (stepId === 'step-1') historyStack = [];
+                    } else {
+                        backBtn.classList.remove('hidden');
+                    }
+                }
+            }, 50); 
+        }
+
+        function goBack() {
+            if (historyStack.length > 0) {
+                const prevStep = historyStack.pop();
+                nextStep(prevStep, true);
+            }
+        }
+
+        function routeVibe() {
+            if (data.vibe === 'Outside') nextStep('step-4-out');
+            else nextStep('step-4-in');
+        }
+
+        function selectOption(category, value, btnElement, containerId = null) {
+            data[category] = value;
+            
+            const parent = containerId ? document.getElementById(containerId) : btnElement.closest('.step');
+            parent.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected', 'group'));
+            
+            if (containerId) {
+                const input = parent.querySelector('input[type="text"]');
+                if (input && document.activeElement !== input) input.value = '';
+            }
+
+            btnElement.classList.add('selected', 'group');
+            enableNextButton(parent.id);
+        }
+
+        function handleCustomInput(category, inputElement, containerId) {
+            const val = inputElement.value.trim();
+            const parent = document.getElementById(containerId);
+            
+            parent.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            
+            if (val.length > 0) {
+                data[category] = val;
+                enableNextButton(containerId);
+            } else {
+                data[category] = '';
+                disableNextButton(containerId);
+            }
+        }
+
+        function enableNextButton(stepId) {
+            const stepNum = stepId.replace('step-', '');
+            const btn = document.getElementById(`next-btn-${stepNum}`);
+            if (btn) btn.disabled = false;
+        }
+
+        function disableNextButton(stepId) {
+            const stepNum = stepId.replace('step-', '');
+            const btn = document.getElementById(`next-btn-${stepNum}`);
+            if (btn) btn.disabled = true;
+        }
+
+        function submitAndShowSummary() {
+            // Collect data from Step 5 inputs
+            data.date = document.getElementById('date-input').value;
+            data.location = document.getElementById('location-input').value.trim();
+            data.extras = document.getElementById('extras-input').value.trim();
+
+            // Set up fallback text for empty optional fields
+            let displayDate = "We'll figure it out! 😌";
+            if (data.date) {
+                displayDate = new Date(data.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            }
+            let displayLocation = data.location ? data.location : "We'll figure it out! 😌";
+
+            // Populate UI Summary Screen
+            document.getElementById('sum-dynamic').innerText = data.dynamic;
+            document.getElementById('sum-vibe').innerText = data.vibe;
+            document.getElementById('sum-activity').innerText = data.activity;
+            document.getElementById('sum-datetime').innerText = displayDate;
+            document.getElementById('sum-location').innerText = displayLocation;
+            
+            if (data.extras) {
+                document.getElementById('sum-extras').innerText = `"${data.extras}"`;
+                document.getElementById('sum-extras-container').classList.remove('hidden');
+            }
+
+            // Create a real HTML form to bypass AJAX/CORS blocks from FormSubmit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://formsubmit.co/saifboss2002@gmail.com';
+            form.target = '_blank'; // Opens in a new tab so they don't leave the summary page
+
+            // Data payload for the email
+            const payload = {
+                _subject: 'New Hangout Confirmed! 🎉',
+                _captcha: 'false', 
+                Who: data.dynamic,
+                Vibe: data.vibe,
+                Activity: data.activity,
+                Date: displayDate,
+                Location: displayLocation,
+                Message: data.extras || 'None specified'
+            };
+
+            // Add hidden inputs to the form
+            for (const key in payload) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = payload[key];
+                form.appendChild(input);
+            }
+
+            // Temporarily add to document, submit, and remove
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+
+            // Progress to the final screen locally
+            nextStep('step-6');
+        }
+
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const card = document.getElementById('main-card');
+
+        noBtn.style.transform = 'none';
+
+        function dodgeAction(e) {
+            if (e) e.preventDefault();
+            
+            const cardRect = card.getBoundingClientRect();
+            const yesRect = yesBtn.getBoundingClientRect();
+            
+            const btnW = noBtn.offsetWidth;
+            const btnH = noBtn.offsetHeight;
+            
+            const padding = 20;
+            const maxLeft = cardRect.width - btnW - padding;
+            const maxTop = cardRect.height - btnH - padding;
+            
+            const yesRel = {
+                left: yesRect.left - cardRect.left,
+                right: yesRect.right - cardRect.left,
+                top: yesRect.top - cardRect.top,
+                bottom: yesRect.bottom - cardRect.top
+            };
+
+            const buffer = 10;
+            yesRel.left -= buffer; yesRel.right += buffer;
+            yesRel.top -= buffer; yesRel.bottom += buffer;
+
+            let newLeft, newTop;
+            let overlapping = true;
+            let attempts = 0;
+
+            while (overlapping && attempts < 50) {
+                newLeft = padding + Math.random() * (maxLeft - padding);
+                newTop = padding + Math.random() * (maxTop - padding);
+                
+                const btnRight = newLeft + btnW;
+                const btnBottom = newTop + btnH;
+                
+                if (btnRight < yesRel.left || newLeft > yesRel.right || btnBottom < yesRel.top || newTop > yesRel.bottom) {
+                    overlapping = false;
+                }
+                attempts++;
+            }
+
+            noBtn.style.left = `${newLeft}px`;
+            noBtn.style.top = `${newTop}px`;
+        }
+
+        noBtn.addEventListener('mouseover', dodgeAction);
+        noBtn.addEventListener('touchstart', dodgeAction);
+    </script>
+</body>
+</html>
