@@ -423,39 +423,26 @@
                 document.getElementById('sum-extras-container').classList.remove('hidden');
             }
 
-            // Create a real HTML form to bypass AJAX/CORS blocks from FormSubmit
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://formsubmit.co/saifboss2002@gmail.com';
-            form.target = '_blank'; // Opens in a new tab so they don't leave the summary page
+            // Send email seamlessly via FormSubmit AJAX endpoint without page redirect or opening a new tab
+            fetch('https://formsubmit.co/ajax/saifboss2002@gmail.com', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: 'New Hangout Confirmed! 🎉',
+                    _captcha: 'false',
+                    Who: data.dynamic,
+                    Vibe: data.vibe,
+                    Activity: data.activity,
+                    Date: displayDate,
+                    Location: displayLocation,
+                    Message: data.extras || 'None specified'
+                })
+            }).catch(err => console.error('FormSubmit AJAX error:', err));
 
-            // Data payload for the email
-            const payload = {
-                _subject: 'New Hangout Confirmed! 🎉',
-                _captcha: 'false', 
-                Who: data.dynamic,
-                Vibe: data.vibe,
-                Activity: data.activity,
-                Date: displayDate,
-                Location: displayLocation,
-                Message: data.extras || 'None specified'
-            };
-
-            // Add hidden inputs to the form
-            for (const key in payload) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = payload[key];
-                form.appendChild(input);
-            }
-
-            // Temporarily add to document, submit, and remove
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
-
-            // Progress to the final screen locally
+            // Progress to the final screen locally immediately
             nextStep('step-6');
         }
 
