@@ -353,11 +353,6 @@
                 </div>
             </div>
             
-            <!-- Calendar Integration -->
-            <a id="gcal-btn" target="_blank" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 mb-4 hover:scale-[1.02] active:scale-[0.98]">
-                <span>📅 Add to Google Calendar</span>
-            </a>
-
             <p class="text-xs text-slate-500 font-medium">Take a screenshot of your VIP pass so you don't forget! 📸</p>
         </div>
 
@@ -726,17 +721,6 @@
                 document.getElementById('sum-extras').innerText = `"${data.extras}"`;
                 document.getElementById('sum-extras-container').classList.remove('hidden');
             }
-
-            // Update Google Calendar Link
-            const gcalTitle = encodeURIComponent(`Hangout: ${data.activity || 'Date'} 🎉`);
-            const gcalDetails = encodeURIComponent(`Hangout Details:\n- Who: ${data.dynamic}\n- Vibe: ${data.vibe}\n- Activity: ${data.activity}\n- Time Slot: ${data.timeSlot || 'Anytime'}\n- Message: ${data.extras || 'None'}`);
-            const gcalLoc = encodeURIComponent(displayLocation);
-            let gcalDates = "";
-            if (data.date) {
-                const cleanD = data.date.replace(/-/g, '');
-                gcalDates = `&dates=${cleanD}T150000Z/${cleanD}T180000Z`;
-            }
-            document.getElementById('gcal-btn').href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${gcalTitle}&details=${gcalDetails}&location=${gcalLoc}${gcalDates}`;
 
             // Send email seamlessly via FormSubmit AJAX endpoint without page redirect or opening a new tab
             fetch('https://formsubmit.co/ajax/saifboss2002@gmail.com', {
