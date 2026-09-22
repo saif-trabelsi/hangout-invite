@@ -113,6 +113,11 @@
             cursor: not-allowed;
             transform: none !important;
         }
+
+        /* Canvas Wheel Rotation Transition */
+        #wheel-canvas {
+            transition: transform 4.5s cubic-bezier(0.15, 0.9, 0.2, 1);
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 text-slate-800">
@@ -225,7 +230,7 @@
             </div>
 
             <!-- Surprise Spin Button -->
-            <button onclick="openWheelModal(['Doulecha 3al korniche / nature 🌊', 'Padel 🎾', 'Nchaj3ou lmontakhab 🇹🇳⚽', 'Surprise Walk 🌳'], 'step-4-out')" class="w-full mb-6 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-1.5">
+            <button onclick="openWheelModal('outdoor', 'step-4-out')" class="w-full mb-6 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-1.5 hover:scale-[1.01]">
                 <span>🎰 Can't Decide? Spin the Surprise Wheel!</span>
             </button>
             
@@ -255,7 +260,7 @@
             </div>
 
             <!-- Surprise Spin Button -->
-            <button onclick="openWheelModal(['Dma9 (Restaurant) 🍽️', 'Salon de thé 🍵', 'Ice cream 🍦', 'Cozy Dessert 🍰'], 'step-4-in')" class="w-full mb-6 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-1.5">
+            <button onclick="openWheelModal('indoor', 'step-4-in')" class="w-full mb-6 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-1.5 hover:scale-[1.01]">
                 <span>🎰 Can't Decide? Spin the Surprise Wheel!</span>
             </button>
             
@@ -359,37 +364,66 @@
         </a>
     </div>
 
-    <!-- Surprise Spin Wheel Modal -->
-    <div id="wheel-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-md p-4">
-        <div class="glass-card p-6 rounded-3xl max-w-xs w-full text-center shadow-2xl relative">
-            <button onclick="closeWheelModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
-            <div class="text-4xl mb-2">🎰</div>
-            <h3 class="text-xl font-bold text-slate-800 mb-1">Let Fate Decide!</h3>
-            <p class="text-xs text-slate-500 mb-4 font-medium">Spinning the surprise wheel...</p>
+    <!-- Interactive Canvas Wheel Modal -->
+    <div id="wheel-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
+        <div class="glass-card p-6 rounded-3xl max-w-sm w-full text-center shadow-2xl relative border border-white/80">
+            <button onclick="closeWheelModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 font-bold text-xl transition-colors">✕</button>
+            <div class="text-3xl mb-1">🎰</div>
+            <h3 class="text-xl font-extrabold text-slate-800 mb-0.5">Surprise Activity Wheel</h3>
+            <p class="text-xs text-slate-500 mb-4 font-medium">Let luck decide the hangout plan!</p>
             
-            <div class="relative w-40 h-40 mx-auto mb-4 flex items-center justify-center">
-                <div id="wheel-spinner" class="w-full h-full rounded-full border-4 border-indigo-400 border-t-purple-600 border-r-pink-500 border-b-amber-400 shadow-inner flex items-center justify-center text-3xl font-extrabold text-indigo-700 transition-transform duration-[2000ms] ease-out">
-                    🎡
+            <!-- Wheel Container with Pin Pointer -->
+            <div class="relative w-64 h-64 mx-auto mb-4 flex items-center justify-center">
+                <!-- Pointer Arrow -->
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-20 text-3xl drop-shadow-md text-red-500">
+                    ▼
                 </div>
+                <!-- Canvas Wheel -->
+                <canvas id="wheel-canvas" width="250" height="250" class="w-full h-full rounded-full shadow-xl border-4 border-white"></canvas>
             </div>
             
-            <div id="wheel-result" class="text-sm font-extrabold text-indigo-700 min-h-[32px] mb-4 bg-indigo-50/80 p-2 rounded-xl border border-indigo-100">
-                Tap Spin to pick!
+            <div id="wheel-result" class="text-sm font-extrabold text-indigo-700 min-h-[36px] mb-4 bg-indigo-50/90 p-2.5 rounded-xl border border-indigo-100 flex items-center justify-center">
+                Click SPIN below! 🎲
             </div>
-            <button id="spin-btn" onclick="spinWheel()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl shadow-md transition-transform active:scale-95 text-sm">
-                SPIN NOW 🎲
+            
+            <button id="spin-btn" onclick="spinWheel()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-95 text-sm uppercase tracking-wider">
+                SPIN THE WHEEL 🎲
             </button>
         </div>
     </div>
 
     <script>
+        // Options Definitions for Outdoor and Indoor
+        const outdoorOptions = [
+            "Doulecha 🌊",
+            "Padel 🎾",
+            "Nchaj3ou ⚽",
+            "Ice cream 🍦",
+            "Nature Walk 🌳"
+        ];
+
+        const indoorOptions = [
+            "Dma9 🍽️",
+            "Salon de thé 🍵",
+            "Ice cream 🍦",
+            "Cozy Dessert 🍰",
+            "Coffee Chill ☕"
+        ];
+
+        const sliceColors = ['#818cf8', '#f472b6', '#fbbf24', '#34d399', '#a78bfa'];
+
         // State
         const data = { dynamic: '', vibe: '', activity: '', date: '', timeSlot: '', location: '', extras: '' };
         let historyStack = [];
-        let currentWheelOptions = [];
+        let currentWheelItems = [];
         let currentWheelStep = '';
-        let audioContext = null;
-        let isPlayingAudio = false;
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        // Music player setup - Relaxing Lo-Fi Melodic Arpeggio Loop
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let musicTimer = null;
 
         window.onload = () => {
             const yesBtn = document.getElementById('yes-btn');
@@ -406,35 +440,191 @@
             }
         };
 
+        // Gentle Lo-Fi / Piano Chord Progression Loop using Web Audio API synthesizer
         function toggleAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
             const btn = document.getElementById('music-toggle');
-            if (isPlayingAudio) {
-                audioContext.suspend();
-                isPlayingAudio = false;
+            if (isMusicPlaying) {
+                stopLofiMusic();
+                isMusicPlaying = false;
                 btn.innerText = '🎵';
                 btn.classList.remove('animate-pulse');
             } else {
-                audioContext.resume();
-                playAmbientVibe();
-                isPlayingAudio = true;
+                startLofiMusic();
+                isMusicPlaying = true;
                 btn.innerText = '🎶';
                 btn.classList.add('animate-pulse');
             }
         }
 
-        function playAmbientVibe() {
-            if (!audioContext) return;
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(329.63, audioContext.currentTime); // E4 soft note
-            gain.gain.setValueAtTime(0.05, audioContext.currentTime);
+        function startLofiMusic() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            // Romantic Cmaj7 - Am7 - Fmaj7 - G7 soft chord notes (Hz)
+            const chords = [
+                [261.63, 329.63, 392.00, 493.88], // Cmaj7
+                [220.00, 261.63, 329.63, 392.00], // Am7
+                [174.61, 220.00, 261.63, 349.23], // Fmaj7
+                [196.00, 246.94, 293.66, 392.00]  // G7
+            ];
+
+            let chordIndex = 0;
+            let noteStep = 0;
+
+            function playNextNote() {
+                if (!isMusicPlaying || !audioCtx) return;
+                
+                const chord = chords[chordIndex];
+                const freq = chord[noteStep % chord.length];
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'triangle'; // Soft warm tone
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                // Gentle envelope (soft attack & long decay like electric piano/vibraphone)
+                gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.3);
+
+                noteStep++;
+                if (noteStep % 4 === 0) {
+                    chordIndex = (chordIndex + 1) % chords.length;
+                }
+
+                musicTimer = setTimeout(playNextNote, 420); // Chill relaxed tempo
+            }
+
+            playNextNote();
+        }
+
+        function stopLofiMusic() {
+            if (musicTimer) clearTimeout(musicTimer);
+        }
+
+        // Draw Interactive Wheel on Canvas
+        function drawWheel(items) {
+            const canvas = document.getElementById('wheel-canvas');
+            const ctx = canvas.getContext('2d');
+            const numSlices = items.length;
+            const sliceAngle = (2 * Math.PI) / numSlices;
+            const radius = canvas.width / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < numSlices; i++) {
+                const startAngle = i * sliceAngle;
+                const endAngle = startAngle + sliceAngle;
+
+                // Slice Fill
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = sliceColors[i % sliceColors.length];
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Text Label
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 12px Plus Jakarta Sans, sans-serif";
+                ctx.shadowColor = "rgba(0,0,0,0.3)";
+                ctx.shadowBlur = 4;
+                ctx.fillText(items[i], radius - 15, 4);
+                ctx.restore();
+            }
+        }
+
+        function openWheelModal(vibeType, stepId) {
+            currentWheelItems = vibeType === 'outdoor' ? outdoorOptions : indoorOptions;
+            currentWheelStep = stepId;
+            
+            const canvas = document.getElementById('wheel-canvas');
+            canvas.style.transition = 'none';
+            canvas.style.transform = 'rotate(0deg)';
+            currentRotation = 0;
+            
+            drawWheel(currentWheelItems);
+
+            document.getElementById('wheel-result').innerText = "Click SPIN below! 🎲";
+            document.getElementById('spin-btn').disabled = false;
+            document.getElementById('wheel-modal').classList.remove('hidden');
+        }
+
+        function closeWheelModal() {
+            if (!isSpinning) {
+                document.getElementById('wheel-modal').classList.add('hidden');
+            }
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            const canvas = document.getElementById('wheel-canvas');
+            const resultDiv = document.getElementById('wheel-result');
+            const spinBtn = document.getElementById('spin-btn');
+
+            spinBtn.disabled = true;
+            resultDiv.innerText = "Spinning for suspense... 🤞";
+
+            // Spin for 4.5 seconds (multi rotations + random landing)
+            const numSlices = currentWheelItems.length;
+            const randomIndex = Math.floor(Math.random() * numSlices);
+            const sliceDeg = 360 / numSlices;
+            
+            // Pointer is at Top (270 deg / -90 deg), landing angle calculation
+            const targetLandingDeg = 360 - (randomIndex * sliceDeg + sliceDeg / 2) - 90;
+            const fullSpins = 360 * 7; // 7 full 360 degree rotations for thrilling duration
+            const finalRotation = fullSpins + targetLandingDeg;
+
+            canvas.style.transition = 'transform 4.5s cubic-bezier(0.15, 0.9, 0.2, 1)';
+            canvas.style.transform = `rotate(${finalRotation}deg)`;
+
+            // Audio click tick simulation during spin
+            let clickInterval = setInterval(() => {
+                playClickSound();
+            }, 180);
+
+            setTimeout(() => {
+                clearInterval(clickInterval);
+                const selected = currentWheelItems[randomIndex];
+                resultDiv.innerText = `Result: ${selected}! 🎉`;
+                
+                // Set activity in app state
+                data.activity = selected;
+                enableNextButton(currentWheelStep);
+                
+                isSpinning = false;
+                spinBtn.disabled = false;
+            }, 4500);
+        }
+
+        function playClickSound() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
             osc.connect(gain);
-            gain.connect(audioContext.destination);
+            gain.connect(audioCtx.destination);
             osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
         }
 
         function nextStep(stepId, isBack = false) {
@@ -490,39 +680,6 @@
             data.timeSlot = slot;
             document.querySelectorAll('.timeslot-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-        }
-
-        function openWheelModal(options, stepId) {
-            currentWheelOptions = options;
-            currentWheelStep = stepId;
-            document.getElementById('wheel-result').innerText = "Tap Spin to pick!";
-            document.getElementById('wheel-modal').classList.remove('hidden');
-        }
-
-        function closeWheelModal() {
-            document.getElementById('wheel-modal').classList.add('hidden');
-        }
-
-        function spinWheel() {
-            const spinner = document.getElementById('wheel-spinner');
-            const resultDiv = document.getElementById('wheel-result');
-            const spinBtn = document.getElementById('spin-btn');
-
-            spinBtn.disabled = true;
-            resultDiv.innerText = "Spinning...";
-
-            const randomDeg = 1440 + Math.floor(Math.random() * 360);
-            spinner.style.transform = `rotate(${randomDeg}deg)`;
-
-            setTimeout(() => {
-                const selected = currentWheelOptions[Math.floor(Math.random() * currentWheelOptions.length)];
-                resultDiv.innerText = `Selected: ${selected}! 🎉`;
-                
-                // Auto select in state
-                data.activity = selected;
-                enableNextButton(currentWheelStep);
-                spinBtn.disabled = false;
-            }, 2000);
         }
 
         function handleCustomInput(category, inputElement, containerId) {
