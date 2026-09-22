@@ -393,9 +393,14 @@
                 Click SPIN below! 🎲
             </div>
             
-            <button id="spin-btn" onclick="spinWheel()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-95 text-sm uppercase tracking-wider">
-                SPIN THE WHEEL 🎲
-            </button>
+            <div class="flex gap-2">
+                <button id="spin-btn" onclick="spinWheel()" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-95 text-sm uppercase tracking-wider">
+                    SPIN 🎲
+                </button>
+                <button id="wheel-next-btn" onclick="confirmWheelSelection()" class="hidden flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-95 text-sm uppercase tracking-wider animate-bounce">
+                    NEXT ➔
+                </button>
+            </div>
         </div>
     </div>
 
@@ -518,6 +523,8 @@
 
             document.getElementById('wheel-result').innerText = "Click SPIN below! 🎲";
             document.getElementById('spin-btn').disabled = false;
+            document.getElementById('spin-btn').innerText = "SPIN 🎲";
+            document.getElementById('wheel-next-btn').classList.add('hidden');
             document.getElementById('wheel-modal').classList.remove('hidden');
         }
 
@@ -534,8 +541,10 @@
             const canvas = document.getElementById('wheel-canvas');
             const resultDiv = document.getElementById('wheel-result');
             const spinBtn = document.getElementById('spin-btn');
+            const nextBtn = document.getElementById('wheel-next-btn');
 
             spinBtn.disabled = true;
+            nextBtn.classList.add('hidden');
             resultDiv.innerText = "Spinning for suspense... 🤞";
 
             // Spin for 4.5 seconds (multi rotations + random landing)
@@ -567,7 +576,16 @@
                 
                 isSpinning = false;
                 spinBtn.disabled = false;
+                spinBtn.innerText = "Re-Spin 🔄";
+                nextBtn.classList.remove('hidden');
             }, 4500);
+        }
+
+        function confirmWheelSelection() {
+            if (data.activity) {
+                closeWheelModal();
+                nextStep('step-5');
+            }
         }
 
         function playClickSound() {
