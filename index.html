@@ -159,13 +159,13 @@
             <p class="text-slate-500 mb-8 font-medium">Just thought it would be a cool idea to catch up.</p>
             
             <div class="relative h-40 sm:h-20 w-full flex justify-center items-center">
-                <!-- Yes Button (Static center) -->
-                <button id="yes-btn" onclick="nextStep('step-2')" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 z-20 w-40">
+                <!-- Yes Button (Static center, highest z-index) -->
+                <button id="yes-btn" onclick="nextStep('step-2')" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 z-50 w-40">
                     Yes!
                 </button>
                 
-                <!-- No Button (Starts absolute, positioned dynamically on load) -->
-                <button id="no-btn" class="bg-white hover:bg-slate-50 text-slate-600 font-semibold py-3.5 px-8 rounded-xl shadow-md border border-slate-200 z-50 w-40">
+                <!-- No Button (Starts absolute, lower z-index than Yes) -->
+                <button id="no-btn" class="bg-white hover:bg-slate-50 text-slate-600 font-semibold py-3.5 px-8 rounded-xl shadow-md border border-slate-200 z-10 w-40">
                     No thanks
                 </button>
             </div>
@@ -772,7 +772,7 @@
                 bottom: yesRect.bottom - cardRect.top
             };
 
-            const buffer = 10;
+            const buffer = 30; // 30px buffer to prevent any overlap with Yes button
             yesRel.left -= buffer; yesRel.right += buffer;
             yesRel.top -= buffer; yesRel.bottom += buffer;
 
@@ -780,9 +780,9 @@
             let overlapping = true;
             let attempts = 0;
 
-            while (overlapping && attempts < 50) {
-                newLeft = padding + Math.random() * (maxLeft - padding);
-                newTop = padding + Math.random() * (maxTop - padding);
+            while (overlapping && attempts < 80) {
+                newLeft = padding + Math.random() * Math.max(10, maxLeft - padding);
+                newTop = padding + Math.random() * Math.max(10, maxTop - padding);
                 
                 const btnRight = newLeft + btnW;
                 const btnBottom = newTop + btnH;
