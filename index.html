@@ -158,7 +158,7 @@
             </h1>
             <p class="text-slate-500 mb-8 font-medium">Just thought it would be a cool idea to catch up.</p>
             
-            <div class="relative h-40 sm:h-20 w-full flex justify-center items-center">
+            <div class="relative h-44 sm:h-20 w-full flex justify-center items-center">
                 <!-- Yes Button (Static center, highest z-index) -->
                 <button id="yes-btn" onclick="nextStep('step-2')" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 z-50 w-40">
                     Yes!
@@ -438,12 +438,12 @@
             const noBtn = document.getElementById('no-btn');
             
             if (window.innerWidth > 640) {
-                noBtn.style.left = '55%';
+                noBtn.style.left = '65%';
                 noBtn.style.top = '50%';
                 noBtn.style.transform = 'translateY(-50%)';
             } else {
                 noBtn.style.left = '50%';
-                noBtn.style.top = '70px';
+                noBtn.style.top = '110px';
                 noBtn.style.transform = 'translateX(-50%)';
             }
         };
