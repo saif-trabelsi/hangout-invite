@@ -129,6 +129,11 @@
     <div class="shape" style="width: 110px; height: 110px; left: 70%; animation-duration: 20s; animation-delay: 6s;"></div>
     <div class="shape" style="width: 70px; height: 70px; left: 85%; animation-duration: 16s; animation-delay: 1s;"></div>
 
+    <!-- HTML5 Background Music Player -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Music Toggle -->
     <button id="music-toggle" onclick="toggleAudio()" title="Toggle Background Music" class="fixed bottom-5 right-5 z-40 bg-white/80 backdrop-blur-md p-3.5 rounded-full shadow-lg hover:bg-white transition-all text-xl border border-white/90 flex items-center justify-center hover:scale-110 active:scale-95">
         🎵
@@ -440,73 +445,23 @@
             }
         };
 
-        // Gentle Lo-Fi / Piano Chord Progression Loop using Web Audio API synthesizer
+        // HTML5 MP3 Audio Player Toggle
         function toggleAudio() {
+            const audio = document.getElementById('bg-music');
             const btn = document.getElementById('music-toggle');
-            if (isMusicPlaying) {
-                stopLofiMusic();
-                isMusicPlaying = false;
+
+            if (audio.paused) {
+                audio.play().then(() => {
+                    btn.innerText = '🎶';
+                    btn.classList.add('animate-pulse');
+                }).catch(err => {
+                    console.error("Audio playback error:", err);
+                });
+            } else {
+                audio.pause();
                 btn.innerText = '🎵';
                 btn.classList.remove('animate-pulse');
-            } else {
-                startLofiMusic();
-                isMusicPlaying = true;
-                btn.innerText = '🎶';
-                btn.classList.add('animate-pulse');
             }
-        }
-
-        function startLofiMusic() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-
-            // Romantic Cmaj7 - Am7 - Fmaj7 - G7 soft chord notes (Hz)
-            const chords = [
-                [261.63, 329.63, 392.00, 493.88], // Cmaj7
-                [220.00, 261.63, 329.63, 392.00], // Am7
-                [174.61, 220.00, 261.63, 349.23], // Fmaj7
-                [196.00, 246.94, 293.66, 392.00]  // G7
-            ];
-
-            let chordIndex = 0;
-            let noteStep = 0;
-
-            function playNextNote() {
-                if (!isMusicPlaying || !audioCtx) return;
-                
-                const chord = chords[chordIndex];
-                const freq = chord[noteStep % chord.length];
-
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-
-                osc.type = 'triangle'; // Soft warm tone
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-                // Gentle envelope (soft attack & long decay like electric piano/vibraphone)
-                gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.1);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start();
-                osc.stop(audioCtx.currentTime + 1.3);
-
-                noteStep++;
-                if (noteStep % 4 === 0) {
-                    chordIndex = (chordIndex + 1) % chords.length;
-                }
-
-                musicTimer = setTimeout(playNextNote, 420); // Chill relaxed tempo
-            }
-
-            playNextNote();
-        }
-
-        function stopLofiMusic() {
-            if (musicTimer) clearTimeout(musicTimer);
         }
 
         // Draw Interactive Wheel on Canvas
